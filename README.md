@@ -44,19 +44,57 @@ npm run build
 
 ## Deployment
 
+### Coolify Deployment
+
+This project is configured for deployment on [Coolify](https://coolify.io). Follow these steps:
+
+1. **Setup Coolify Project**:
+   - Create a new project in your Coolify instance
+   - Connect your GitHub repository
+   - Select "Docker Compose" as the deployment method
+
+2. **Configure Build Settings**:
+   - Build Command: `pnpm install && pnpm build`
+   - Start Command: `pnpm start`
+   - Port: 3000
+   - Use the included `docker-compose.yml` or `Dockerfile`
+
+3. **Environment Variables**:
+   - `NODE_ENV=production`
+   - `PORT=3000`
+
+4. **GitHub Actions Deployment**:
+   - Add the following secrets to your GitHub repository:
+     - `COOLIFY_WEBHOOK_URL`: Your Coolify webhook URL
+     - `COOLIFY_TOKEN`: Your Coolify API token (optional)
+   - The workflow will automatically deploy on pushes to `main`
+
+5. **Health Checks**:
+   - The app includes built-in health checks at `/`
+   - Coolify will automatically monitor the application
+
+For detailed configuration, see [COOLIFY.md](./COOLIFY.md).
+
 ### Docker Deployment
 
 To build and run using Docker:
 
 ```bash
-docker build -t my-app .
+docker build -t streamdeck-icons .
 
 # Run the container
-docker run -p 3000:3000 my-app
+docker run -p 3000:3000 streamdeck-icons
+```
+
+Or use Docker Compose:
+
+```bash
+docker-compose up -d
 ```
 
 The containerized application can be deployed to any platform that supports Docker, including:
 
+- Coolify (recommended)
 - AWS ECS
 - Google Cloud Run
 - Azure Container Apps
