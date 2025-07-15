@@ -14,7 +14,7 @@ import IconPicker from "~/components/icon-picker/root";
 import { Link } from "react-router";
 
 const Root: React.FC = () => {
-  const [text, setText] = useState("Hello");
+  const [text, setText] = useState("");
   const [textColor, setTextColor] = useState("#ffffff");
   const [backgroundColor, setBackgroundColor] = useState("#000000");
   const [iconColor, setIconColor] = useState("#ffffff");

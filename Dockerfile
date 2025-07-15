@@ -1,22 +1,24 @@
-FROM node:20-alpine AS development-dependencies-env
-COPY . /app
+# Install dependencies
+FROM node:22-alpine AS deps
+RUN npm install -g pnpm
 WORKDIR /app
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm fetch
+RUN pnpm install -r --offline --prod
 
-FROM node:20-alpine AS production-dependencies-env
-COPY ./package.json package-lock.json /app/
+# Build the app
+FROM node:22-alpine AS builder
+RUN npm install -g pnpm
 WORKDIR /app
-RUN npm ci --omit=dev
+COPY --from=deps /app/node_modules /app/node_modules
+COPY . .
+RUN pnpm build
 
-FROM node:20-alpine AS build-env
-COPY . /app/
-COPY --from=development-dependencies-env /app/node_modules /app/node_modules
+# Production image
+FROM node:22-alpine AS runner
 WORKDIR /app
-RUN npm run build
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
 
-FROM node:20-alpine
-COPY ./package.json package-lock.json /app/
-COPY --from=production-dependencies-env /app/node_modules /app/node_modules
-COPY --from=build-env /app/build /app/build
-WORKDIR /app
-CMD ["npm", "run", "start"]
+CMD ["pnpm", "start"]
