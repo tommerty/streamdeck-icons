@@ -29,10 +29,6 @@ ENV NODE_ENV=production
 ENV PORT=3000
 
 # Expose port
-EXPOSE 3000
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=5 \
-  CMD curl -f http://localhost:3000/ || exit 1
+EXPOSE 3009
 
 CMD ["pnpm", "start"]
