@@ -1,4 +1,49 @@
+# React Router build artifacts
 .react-router
 build
+
+# Dependencies
 node_modules
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.test
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage
+
+# Temporary files
+.tmp
+temp
+
+# Documentation (not needed in container)
 README.md
+DEPLOYMENT.md
+COOLIFY.md
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
