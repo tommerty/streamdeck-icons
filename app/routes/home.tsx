@@ -1,13 +1,14 @@
 import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
+import Root from "~/components/section/root";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Stream Deck Icons" },
+    { name: "description", content: "Build icons for your Stream Deck" },
   ];
 }
 
 export default function Home() {
-  return <Welcome />;
+  return <Root />;
 }

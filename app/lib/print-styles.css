@@ -1,0 +1,20 @@
+/* app/lib/print-styles.css */
+body {
+    background-color: transparent !important;
+    margin: 0;
+    padding: 0;
+}
+
+.streamdeck-icon-print-container {
+    font-family: sans-serif;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.streamdeck-icon-print-container,
+.streamdeck-icon-print-container * {
+    box-sizing: border-box;
+}
