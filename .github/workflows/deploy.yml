@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy to Coolify
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -45,13 +45,13 @@ jobs:
         run: pnpm build
 
       - name: Deploy to Coolify
-        # This is a placeholder for your Coolify deployment.
-        # You will need to configure a webhook in your Coolify instance
-        # and call it here to trigger a deployment.
-        #
-        # Example using curl:
-        # run: curl -X POST ${{ secrets.COOLIFY_WEBHOOK_URL }}
-        #
-        # You need to add COOLIFY_WEBHOOK_URL as a secret in your GitHub repository settings.
-        # Go to your Coolify project > Settings > Webhooks to get the URL.
-        run: echo "Deployment to Coolify would happen here."
+        if: github.ref == 'refs/heads/main'
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"force": true}' \
+            "${{ secrets.COOLIFY_WEBHOOK_URL }}"
+        env:
+          COOLIFY_WEBHOOK_URL: ${{ secrets.COOLIFY_WEBHOOK_URL }}
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
