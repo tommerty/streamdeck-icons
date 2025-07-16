@@ -39,14 +39,14 @@ This guide will help you deploy the Stream Deck Icons application to Coolify.
 
 Set the following environment variables in Coolify:
 - `NODE_ENV=production`
-- `PORT=3000`
+- `PORT=<your-preferred-port>` (e.g., `PORT=3009` if port 3000 is occupied)
 
 ## Step 5: Build Settings
 
 Configure the following in Coolify:
 - **Build Command**: `pnpm install && pnpm build`
 - **Start Command**: `pnpm start`
-- **Port**: 3000
+- **Port**: Set to match your PORT environment variable (e.g., 3009)
 - **Health Check Path**: `/`
 
 ## Step 6: Deploy
@@ -68,8 +68,9 @@ Configure the following in Coolify:
    - Check that Node.js 22 is available
 
 2. **Health check fails**
-   - Verify the application is running on port 3000
+   - Verify the application is running on the configured PORT
    - Check application logs in Coolify
+   - Ensure PORT environment variable is set correctly
 
 3. **GitHub Actions deployment fails**
    - Verify webhook URL and token are correctly set

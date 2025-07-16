@@ -5,12 +5,12 @@
 ### Build Configuration
 - **Build Command**: `pnpm install && pnpm build`
 - **Start Command**: `pnpm start`
-- **Port**: 3000
+- **Port**: Configurable (defaults to 3000, can be set via PORT environment variable)
 - **Docker Build**: Uses the included Dockerfile
 
 ### Environment Variables
 - `NODE_ENV=production`
-- `PORT=3000`
+- `PORT=<your-preferred-port>` (e.g., `PORT=3009` for port 3009)
 
 ### Health Check
 - **Path**: `/`
@@ -35,3 +35,5 @@ The included `docker-compose.yml` can be used for local testing or as a referenc
 - Uses pnpm as package manager
 - Includes health checks for better reliability
 - Optimized for production deployment
+- Port is fully configurable via environment variables (no hard-coded ports)
+- Docker health checks automatically use the configured PORT value

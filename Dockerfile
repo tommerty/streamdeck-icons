@@ -26,9 +26,10 @@ COPY --from=builder /app/package.json ./package.json
 
 # Set environment variables
 ENV NODE_ENV=production
+# PORT is now configurable via environment variables (default: 3000)
 ENV PORT=3000
 
-# Expose port
-EXPOSE 3009
+# The port is dynamically exposed based on the PORT environment variable
+# No hard-coded EXPOSE directive - let the runtime handle port binding
 
 CMD ["pnpm", "start"]
