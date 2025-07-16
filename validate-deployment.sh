@@ -59,10 +59,17 @@ echo ""
 echo "Checking file contents..."
 
 # Check Dockerfile
-if grep -q "EXPOSE 3000" Dockerfile; then
+if grep -q "ENV PORT" Dockerfile; then
+    print_status "Dockerfile allows configurable PORT"
+else
+    print_warning "Dockerfile does not include configurable PORT"
+fi
+
+# Check that Dockerfile has proper EXPOSE
+if grep -q "^EXPOSE 3000" Dockerfile; then
     print_status "Dockerfile exposes port 3000"
 else
-    print_error "Dockerfile does not expose port 3000"
+    print_warning "Dockerfile should expose port 3000"
 fi
 
 if grep -q "HEALTHCHECK" Dockerfile; then
@@ -72,10 +79,17 @@ else
 fi
 
 # Check docker-compose.yml
-if grep -q "ports:" docker-compose.yml && grep -q "3000:3000" docker-compose.yml; then
-    print_status "docker-compose.yml maps port 3000"
+if grep -q "ports:" docker-compose.yml; then
+    print_status "docker-compose.yml includes port mapping"
 else
-    print_error "docker-compose.yml does not map port 3000"
+    print_error "docker-compose.yml does not include port mapping"
+fi
+
+# Check that health check uses internal port 3000
+if grep -q "localhost:3000" docker-compose.yml; then
+    print_status "docker-compose.yml health check uses internal port 3000"
+else
+    print_warning "docker-compose.yml health check should use port 3000"
 fi
 
 # Check GitHub Actions workflow

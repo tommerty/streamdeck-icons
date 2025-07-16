@@ -39,15 +39,22 @@ This guide will help you deploy the Stream Deck Icons application to Coolify.
 
 Set the following environment variables in Coolify:
 - `NODE_ENV=production`
-- `PORT=3000`
+- `PORT=<external-port>` (e.g., `PORT=3009` to expose on port 3009)
+
+**Important**: The application runs on port 3000 internally. The PORT variable only configures the external port mapping to avoid conflicts.
 
 ## Step 5: Build Settings
 
 Configure the following in Coolify:
 - **Build Command**: `pnpm install && pnpm build`
 - **Start Command**: `pnpm start`
-- **Port**: 3000
+- **Port**: Set to match your PORT environment variable (e.g., 3009 for external access)
 - **Health Check Path**: `/`
+
+**Port Configuration**:
+- Internal port: Always 3000 (application runs here)
+- External port: Set via PORT environment variable (defaults to 3000)
+- Example: `PORT=3009` maps external port 3009 → internal port 3000
 
 ## Step 6: Deploy
 
@@ -68,8 +75,14 @@ Configure the following in Coolify:
    - Check that Node.js 22 is available
 
 2. **Health check fails**
-   - Verify the application is running on port 3000
+   - Verify the application is running on port 3000 internally
    - Check application logs in Coolify
+   - Ensure PORT environment variable is set for external port mapping only
+
+3. **Port conflicts**
+   - If you get "port already allocated" errors, set PORT to an available port
+   - Example: `PORT=3009` or `PORT=8080` to avoid conflicts
+   - The application will still run on port 3000 internally
 
 3. **GitHub Actions deployment fails**
    - Verify webhook URL and token are correctly set

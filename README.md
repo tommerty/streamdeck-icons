@@ -56,12 +56,12 @@ This project is configured for deployment on [Coolify](https://coolify.io). Foll
 2. **Configure Build Settings**:
    - Build Command: `pnpm install && pnpm build`
    - Start Command: `pnpm start`
-   - Port: 3000
+   - Port: Set to match your PORT environment variable (defaults to 3000)
    - Use the included `docker-compose.yml` or `Dockerfile`
 
 3. **Environment Variables**:
    - `NODE_ENV=production`
-   - `PORT=3000`
+   - `PORT=<your-preferred-port>` (e.g., `PORT=3009` if port 3000 is occupied)
 
 4. **GitHub Actions Deployment**:
    - Add the following secrets to your GitHub repository:
@@ -82,14 +82,21 @@ To build and run using Docker:
 ```bash
 docker build -t streamdeck-icons .
 
-# Run the container
+# Run the container on port 3000 (default)
 docker run -p 3000:3000 streamdeck-icons
+
+# Or run on a custom port to avoid conflicts (e.g., 3009 externally, 3000 internally)
+docker run -p 3009:3000 streamdeck-icons
 ```
 
 Or use Docker Compose:
 
 ```bash
-docker-compose up -d
+# Default configuration (port 3000)
+docker compose up -d
+
+# Custom external port to avoid conflicts
+PORT=3009 docker compose up -d
 ```
 
 The containerized application can be deployed to any platform that supports Docker, including:

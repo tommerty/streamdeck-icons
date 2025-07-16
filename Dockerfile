@@ -28,7 +28,7 @@ COPY --from=builder /app/package.json ./package.json
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Expose port
-EXPOSE 3009
+# Expose the port the app runs on
+EXPOSE 3000
 
 CMD ["pnpm", "start"]

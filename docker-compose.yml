@@ -1,15 +1,13 @@
-version: '3.8'
-
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3009:3009"
+      - "${PORT:-3000}:3000"
     environment:
       - NODE_ENV=production
-      - PORT=3009
+      - PORT=3000
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/"]
