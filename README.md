@@ -85,14 +85,18 @@ docker build -t streamdeck-icons .
 # Run the container on port 3000 (default)
 docker run -p 3000:3000 streamdeck-icons
 
-# Or run on a custom port (e.g., 3009)
-docker run -p 3009:3009 -e PORT=3009 streamdeck-icons
+# Or run on a custom port to avoid conflicts (e.g., 3009 externally, 3000 internally)
+docker run -p 3009:3000 streamdeck-icons
 ```
 
 Or use Docker Compose:
 
 ```bash
-docker-compose up -d
+# Default configuration (port 3000)
+docker compose up -d
+
+# Custom external port to avoid conflicts
+PORT=3009 docker compose up -d
 ```
 
 The containerized application can be deployed to any platform that supports Docker, including:

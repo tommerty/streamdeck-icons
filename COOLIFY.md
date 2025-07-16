@@ -5,12 +5,18 @@
 ### Build Configuration
 - **Build Command**: `pnpm install && pnpm build`
 - **Start Command**: `pnpm start`
-- **Port**: Configurable (defaults to 3000, can be set via PORT environment variable)
+- **Port**: Application runs on port 3000 internally
 - **Docker Build**: Uses the included Dockerfile
 
 ### Environment Variables
 - `NODE_ENV=production`
-- `PORT=<your-preferred-port>` (e.g., `PORT=3009` for port 3009)
+- `PORT=<external-port>` (e.g., `PORT=3009` to expose on port 3009, maps to internal port 3000)
+
+### Port Configuration
+- **Internal Port**: Always 3000 (application runs on this port inside the container)
+- **External Port**: Configurable via PORT environment variable (defaults to 3000)
+- **Example**: Setting `PORT=3009` maps external port 3009 to internal port 3000
+- **Avoids Conflicts**: If port 3000 is occupied, set PORT to any available port (e.g., 3009, 8080, etc.)
 
 ### Health Check
 - **Path**: `/`
@@ -35,5 +41,6 @@ The included `docker-compose.yml` can be used for local testing or as a referenc
 - Uses pnpm as package manager
 - Includes health checks for better reliability
 - Optimized for production deployment
-- Port is fully configurable via environment variables (no hard-coded ports)
-- Docker health checks automatically use the configured PORT value
+- Application always runs on port 3000 internally
+- External port mapping is configurable via PORT environment variable
+- Docker health checks use the internal port 3000

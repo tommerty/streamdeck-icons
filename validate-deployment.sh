@@ -65,11 +65,11 @@ else
     print_warning "Dockerfile does not include configurable PORT"
 fi
 
-# Check that Dockerfile doesn't have hard-coded EXPOSE
-if grep -q "^EXPOSE" Dockerfile; then
-    print_warning "Dockerfile contains hard-coded EXPOSE directive - should be configurable"
+# Check that Dockerfile has proper EXPOSE
+if grep -q "^EXPOSE 3000" Dockerfile; then
+    print_status "Dockerfile exposes port 3000"
 else
-    print_status "Dockerfile does not contain hard-coded EXPOSE directive"
+    print_warning "Dockerfile should expose port 3000"
 fi
 
 if grep -q "HEALTHCHECK" Dockerfile; then
@@ -85,11 +85,11 @@ else
     print_error "docker-compose.yml does not include port mapping"
 fi
 
-# Check that health check uses PORT variable
-if grep -q "localhost:\$\$PORT" docker-compose.yml; then
-    print_status "docker-compose.yml health check uses PORT variable"
+# Check that health check uses internal port 3000
+if grep -q "localhost:3000" docker-compose.yml; then
+    print_status "docker-compose.yml health check uses internal port 3000"
 else
-    print_warning "docker-compose.yml health check should use PORT variable"
+    print_warning "docker-compose.yml health check should use port 3000"
 fi
 
 # Check GitHub Actions workflow
