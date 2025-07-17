@@ -12,6 +12,15 @@ import printStyles from "~/lib/print-styles.css?raw";
 import { renderToStaticMarkup } from "react-dom/server";
 import IconPicker from "~/components/icon-picker";
 import { Link } from "react-router";
+import { Slider } from "./ui/slider";
+import { Label } from "./ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+import { cn } from "~/lib/utils";
 
 const Root: React.FC = () => {
   const [text, setText] = useState("");
@@ -22,6 +31,8 @@ const Root: React.FC = () => {
   const [textPosition, setTextPosition] =
     useState<TextPosition>("bottom-center");
   const [textScale, setTextScale] = useState(1);
+  const [iconScale, setIconScale] = useState(1);
+  const [iconRotation, setIconRotation] = useState(0);
 
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -57,7 +68,7 @@ const Root: React.FC = () => {
     const textDiv = `<div style="${Object.entries(textStyle)
       .map(([k, v]) => `${k.replace(/([A-Z])/g, "-$1").toLowerCase()}:${v}`)
       .join(";")}"><div>${text}</div></div>`;
-    const iconDiv = `<div style="color:${iconColor}; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">${iconHTML}</div>`;
+    const iconDiv = `<div style="color:${iconColor}; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(${iconScale}) rotate(${iconRotation}deg);">${iconHTML}</div>`;
     const containerDiv = `<div class="streamdeck-icon-print-container" style="${Object.entries(
       containerStyle
     )
@@ -159,6 +170,122 @@ const Root: React.FC = () => {
               <CardTitle>Stream Deck Icon</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 overflow-auto py-3 px-3">
+              {/* Icon Controls */}
+              <div className="py-1 flex items-center text-sm text-muted-foreground before:flex-1 before:border-t before:border-border before:me-6 after:flex-1 after:border-t after:border-border after:ms-6">
+                Icon Controls
+              </div>
+              <div>
+                <label>Icon</label>
+                <IconPicker
+                  value={selectedIcon}
+                  onValueChange={setSelectedIcon}
+                />
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <Label>Icon Scale</Label>
+                  <div className="flex items-center gap-1">
+                    <TooltipProvider delayDuration={0}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className={cn(
+                              "size-7 transition-opacity",
+                              iconScale !== 1 ? "opacity-100" : "opacity-0"
+                            )}
+                            aria-label="Reset"
+                            onClick={() => setIconScale(1)}
+                          >
+                            <TablerIcons.IconRestore
+                              size={16}
+                              aria-hidden="true"
+                            />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent className="px-2 py-1 text-xs">
+                          Reset to default
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <Input
+                      className="h-7 w-12 px-2 py-0"
+                      type="text"
+                      inputMode="decimal"
+                      value={iconScale}
+                      aria-label="Enter value"
+                      onChange={(e) => setIconScale(Number(e.target.value))}
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Slider
+                    className="grow"
+                    min={0.5}
+                    max={3}
+                    step={0.1}
+                    value={[iconScale]}
+                    onValueChange={(value) => setIconScale(value[0])}
+                  />
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <Label>Icon Rotation</Label>
+                  <div className="flex items-center gap-1">
+                    <TooltipProvider delayDuration={0}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className={cn(
+                              "size-7 transition-opacity",
+                              iconRotation !== 0 ? "opacity-100" : "opacity-0"
+                            )}
+                            aria-label="Reset"
+                            onClick={() => setIconRotation(0)}
+                          >
+                            <TablerIcons.IconRestore
+                              size={16}
+                              aria-hidden="true"
+                            />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent className="px-2 py-1 text-xs">
+                          Reset to default
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <Input
+                      className="h-7 w-12 px-2 py-0"
+                      type="text"
+                      inputMode="decimal"
+                      value={iconRotation}
+                      aria-label="Enter value"
+                      onChange={(e) => setIconRotation(Number(e.target.value))}
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Slider
+                    className="grow"
+                    min={-360}
+                    max={360}
+                    defaultValue={[0]}
+                    step={10}
+                    value={[iconRotation]}
+                    onValueChange={(value) => setIconRotation(value[0])}
+                    aria-label="Rotation"
+                  />
+                </div>
+              </div>
+
+              {/* Text Controls */}
+              <div className="py-1 flex items-center text-sm text-muted-foreground before:flex-1 before:border-t before:border-border before:me-6 after:flex-1 after:border-t after:border-border after:ms-6">
+                Text Controls
+              </div>
               <div className="group relative">
                 <label
                   htmlFor={"text"}
@@ -174,14 +301,72 @@ const Root: React.FC = () => {
                   onChange={(e) => setText(e.target.value)}
                 />
               </div>
-
+              <TextPositionControl
+                value={textPosition}
+                onValueChange={setTextPosition}
+              />
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <Label>Text Scale</Label>
+                  <div className="flex items-center gap-1">
+                    <TooltipProvider delayDuration={0}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className={cn(
+                              "size-7 transition-opacity",
+                              textScale !== 1 ? "opacity-100" : "opacity-0"
+                            )}
+                            aria-label="Reset"
+                            onClick={() => setTextScale(1)}
+                          >
+                            <TablerIcons.IconRestore
+                              size={16}
+                              aria-hidden="true"
+                            />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent className="px-2 py-1 text-xs">
+                          Reset to default
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <Input
+                      className="h-7 w-12 px-2 py-0"
+                      type="text"
+                      inputMode="decimal"
+                      value={textScale}
+                      aria-label="Enter value"
+                      onChange={(e) => setTextScale(Number(e.target.value))}
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Slider
+                    className="grow"
+                    min={0.5}
+                    max={3}
+                    step={0.1}
+                    value={[textScale]}
+                    onValueChange={(value) => setTextScale(value[0])}
+                  />
+                </div>
+              </div>
+              <div className="py-1 flex items-center text-sm text-muted-foreground before:flex-1 before:border-t before:border-border before:me-6 after:flex-1 after:border-t after:border-border after:ms-6">
+                Colors
+              </div>
               <div>
-                <label>Icon</label>
-                <IconPicker
-                  value={selectedIcon}
-                  onValueChange={setSelectedIcon}
+                <label>Text Color</label>
+                <Input
+                  type="color"
+                  value={textColor}
+                  onChange={(e) => setTextColor(e.target.value)}
                 />
               </div>
+
+              {/* Background Controls */}
               <div>
                 <label>Background Color</label>
                 <Input
@@ -196,29 +381,6 @@ const Root: React.FC = () => {
                   type="color"
                   value={iconColor}
                   onChange={(e) => setIconColor(e.target.value)}
-                />
-              </div>
-              <div>
-                <label>Text Color</label>
-                <Input
-                  type="color"
-                  value={textColor}
-                  onChange={(e) => setTextColor(e.target.value)}
-                />
-              </div>
-              <TextPositionControl
-                value={textPosition}
-                onValueChange={setTextPosition}
-              />
-              <div>
-                <label>Text Scale</label>
-                <Input
-                  type="range"
-                  min="0.5"
-                  max="3"
-                  step="0.1"
-                  value={textScale}
-                  onChange={(e) => setTextScale(parseFloat(e.target.value))}
                 />
               </div>
             </CardContent>
@@ -246,6 +408,8 @@ const Root: React.FC = () => {
               iconColor={iconColor}
               textPosition={textPosition}
               textScale={textScale}
+              iconScale={iconScale}
+              iconRotation={iconRotation}
             />
           </div>
           {/* <Button onClick={handleDownload}>Download Icon</Button> */}

@@ -10,6 +10,8 @@ interface PreviewProps {
   iconColor: string;
   textPosition: TextPosition;
   textScale: number;
+  iconScale: number;
+  iconRotation: number;
 }
 
 const getPositionStyles = (position: TextPosition): React.CSSProperties => {
@@ -58,6 +60,8 @@ const Preview: React.FC<PreviewProps> = ({
   iconColor,
   textPosition,
   textScale,
+  iconScale,
+  iconRotation,
 }) => {
   const IconComponent =
     (TablerIcons as any)[icon] || TablerIcons.IconQuestionMark;
@@ -89,7 +93,7 @@ const Preview: React.FC<PreviewProps> = ({
           position: "absolute",
           top: "50%",
           left: "50%",
-          transform: "translate(-50%, -50%)",
+          transform: `translate(-50%, -50%) scale(${iconScale}) rotate(${iconRotation}deg)`,
         }}
       >
         <IconComponent size={128} />
