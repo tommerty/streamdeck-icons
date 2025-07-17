@@ -1,18 +1,45 @@
-# Welcome to React Router!
+# Stream Deck Icon Generator
 
-A modern, production-ready template for building full-stack React applications using React Router.
+A web-based tool to create custom icons for your Elgato Stream Deck. Design beautiful, personalized icons with custom text, colors, and a wide selection of icons from the Tabler Icons library.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+Hosted on [streamdeck.tommerty.com](https://streamdeck.tommerty.com)
+
+![Stream Deck Icon Generator Screenshot](/public/pic.png)
 
 ## Features
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- **Live Preview**: See your icon update in real-time as you make changes.
+- **Icon Customization**:
+  - Choose from thousands of icons from the [Tabler Icons](https://tabler-icons.io/) library.
+  - Adjust the icon's scale and rotation.
+  - Set a custom color for the icon.
+- **Text Customization**:
+  - Add your own text to the icon.
+  - Control text scale.
+  - Position the text in one of 9 locations (top-left, top-center, top-right, middle-left, etc.).
+  - Set a custom color for the text.
+- **Background Color**: Choose any background color to match your style.
+- **Download as PNG**: Download your final icon as a 256x256 PNG, ready to be used on your Stream Deck.
+
+## How to Use
+
+1.  **Open the application** in your web browser.
+2.  **Use the controls** on the left-hand side to design your icon.
+3.  **Select an icon**: Browse or search for an icon.
+4.  **Add text**: Enter your desired text.
+5.  **Adjust position and scale**: Fine-tune the placement of your icon and text.
+6.  **Choose colors**: Pick colors for the icon, text, and background.
+7.  **Preview**: The preview on the right will update instantly.
+8.  **Download**: Once you're happy with your design, click the "Download Icon" button.
+
+## Tech Stack
+
+- [React Router](https://reactrouter.com)
+- [Vite](https://vitejs.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/) for styling.
+- [Tabler Icons](https://tabler-icons.io/) for the icon set.
+- [html2canvas](https://html2canvas.hertzen.com/) for generating the downloadable icon image.
 
 ## Getting Started
 
@@ -21,7 +48,7 @@ A modern, production-ready template for building full-stack React applications u
 Install the dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### Development
@@ -29,7 +56,7 @@ npm install
 Start the development server with HMR:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Your application will be available at `http://localhost:5173`.
@@ -39,41 +66,16 @@ Your application will be available at `http://localhost:5173`.
 Create a production build:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 ## Deployment
 
+This project is configured for deployment on various platforms.
+
 ### Coolify Deployment
 
-This project is configured for deployment on [Coolify](https://coolify.io). Follow these steps:
-
-1. **Setup Coolify Project**:
-   - Create a new project in your Coolify instance
-   - Connect your GitHub repository
-   - Select "Docker Compose" as the deployment method
-
-2. **Configure Build Settings**:
-   - Build Command: `pnpm install && pnpm build`
-   - Start Command: `pnpm start`
-   - Port: Set to match your PORT environment variable (defaults to 3000)
-   - Use the included `docker-compose.yml` or `Dockerfile`
-
-3. **Environment Variables**:
-   - `NODE_ENV=production`
-   - `PORT=<your-preferred-port>` (e.g., `PORT=3009` if port 3000 is occupied)
-
-4. **GitHub Actions Deployment**:
-   - Add the following secrets to your GitHub repository:
-     - `COOLIFY_WEBHOOK_URL`: Your Coolify webhook URL
-     - `COOLIFY_TOKEN`: Your Coolify API token (optional)
-   - The workflow will automatically deploy on pushes to `main`
-
-5. **Health Checks**:
-   - The app includes built-in health checks at `/`
-   - Coolify will automatically monitor the application
-
-For detailed configuration, see [COOLIFY.md](./COOLIFY.md).
+This project is configured for deployment on [Coolify](https://coolify.io). See [COOLIFY.md](./COOLIFY.md) for details.
 
 ### Docker Deployment
 
@@ -84,49 +86,32 @@ docker build -t streamdeck-icons .
 
 # Run the container on port 3000 (default)
 docker run -p 3000:3000 streamdeck-icons
-
-# Or run on a custom port to avoid conflicts (e.g., 3009 externally, 3000 internally)
-docker run -p 3009:3000 streamdeck-icons
 ```
 
 Or use Docker Compose:
 
 ```bash
-# Default configuration (port 3000)
 docker compose up -d
-
-# Custom external port to avoid conflicts
-PORT=3009 docker compose up -d
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- Coolify (recommended)
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
+The containerized application can be deployed to any platform that supports Docker.
 
 ### DIY Deployment
 
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
+If you're familiar with deploying Node applications, the built-in app server is production-ready. Deploy the output of `pnpm run build`.
 
 ```
 ├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
+├── pnpm-lock.yaml
 ├── build/
 │   ├── client/    # Static assets
 │   └── server/    # Server-side code
 ```
 
-## Styling
+## Contributing
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+Contributions are welcome! If you have ideas for new features or improvements, feel free to open an issue or submit a pull request.
 
----
+## License
 
-Built with ❤️ using React Router.
+This project is open source. Please add a license file to define the terms under which it is shared.
