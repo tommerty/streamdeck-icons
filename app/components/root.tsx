@@ -4,13 +4,13 @@ import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import * as TablerIcons from "@tabler/icons-react";
 import html2canvas from "html2canvas";
-import Preview from "~/components/preview/root";
+import Preview from "~/components/preview";
 import TextPositionControl, {
   type TextPosition,
-} from "~/components/text-position-control/root";
+} from "~/components/text-position-control";
 import printStyles from "~/lib/print-styles.css?raw";
 import { renderToStaticMarkup } from "react-dom/server";
-import IconPicker from "~/components/icon-picker/root";
+import IconPicker from "~/components/icon-picker";
 import { Link } from "react-router";
 
 const Root: React.FC = () => {
@@ -154,15 +154,27 @@ const Root: React.FC = () => {
     <div className="container w-full mx-auto p-4 min-h-dvh h-dvh">
       <div className="flex items-start gap-8 h-full">
         <div className="w-1/3 h-full min-h-full">
-          <Card className="min-h-full h-full overflow-auto">
-            <CardHeader>
-              <CardTitle>Stream Deck Icon Builder</CardTitle>
+          <Card className="min-h-full h-full p-0 gap-0 overflow-hidden">
+            <CardHeader className="p-3 bg-accent">
+              <CardTitle>Stream Deck Icon</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label>Text</label>
-                <Input value={text} onChange={(e) => setText(e.target.value)} />
+            <CardContent className="space-y-4 overflow-auto py-3 px-3">
+              <div className="group relative">
+                <label
+                  htmlFor={"text"}
+                  className="bg-card text-muted-foreground group-focus-within:text-foreground absolute start-1 top-0 z-10 block -translate-y-1/2 px-2 text-xs font-medium group-has-disabled:opacity-50"
+                >
+                  Text
+                </label>
+                <Input
+                  id={"text"}
+                  className="h-10 !bg-card"
+                  placeholder="My button"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                />
               </div>
+
               <div>
                 <label>Icon</label>
                 <IconPicker
@@ -210,13 +222,13 @@ const Root: React.FC = () => {
                 />
               </div>
             </CardContent>
-            <div className="mt-auto px-6 flex flex-col gap-3">
+            <div className="mt-auto px-3 py-3 flex flex-col gap-3 bg-accent rounded-b-md">
               <Button className="w-full justify-start" onClick={handleDownload}>
                 <TablerIcons.IconDownload />
                 Download Icon
               </Button>
               <Link to="https://github.com/tommerty/streamdeck-icons">
-                <Button variant={"secondary"} className="w-full justify-start">
+                <Button variant={"outline"} className="w-full justify-start">
                   <TablerIcons.IconBrandGithub />
                   GitHub
                 </Button>

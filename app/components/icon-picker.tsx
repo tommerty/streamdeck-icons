@@ -78,7 +78,7 @@ const IconPicker: React.FC<IconPickerProps> = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-96 p-0">
-        <div className="flex flex-col gap-2 items-center justify-center">
+        <div className="flex flex-col gap-0 items-center justify-center">
           <Input
             placeholder="Search icons..."
             value={searchTerm}
@@ -87,7 +87,7 @@ const IconPicker: React.FC<IconPickerProps> = ({
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
-            className="flex flex-wrap gap-2 h-80 overflow-y-auto p-3"
+            className="grid grid-cols-4 gap-2 h-80 overflow-y-auto p-3"
           >
             {iconsToRender.map((iconName) => {
               const IconComponent = (TablerIcons as any)[iconName];

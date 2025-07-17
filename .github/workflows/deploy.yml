@@ -1,4 +1,4 @@
-name: Deploy to Coolify
+name: Release and Deploy
 
 on:
   push:
@@ -7,11 +7,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  release_and_deploy:
+    name: Release and Deploy
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -39,13 +48,27 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+
+      - name: Release
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RELEASE_OUTPUT=$(pnpm exec semantic-release || true)
+          if [ $? -eq 0 ]; then
+            echo "new_release_published=true" >> $GITHUB_OUTPUT
+            echo "new_release_version=$(echo "$RELEASE_OUTPUT" | grep -oP '(?<=The next release version is )\d+\.\d+\.\d+')" >> $GITHUB_OUTPUT
+          else
+            echo "new_release_published=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Build
+        if: steps.semantic.outputs.new_release_published == 'true'
         run: pnpm build
 
       - name: Deploy to Coolify
-        if: github.ref == 'refs/heads/main'
+        if: steps.semantic.outputs.new_release_published == 'true'
         run: |
           curl -X POST \
             -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}" \

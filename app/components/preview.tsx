@@ -1,6 +1,6 @@
 import React from "react";
 import * as TablerIcons from "@tabler/icons-react";
-import { type TextPosition } from "~/components/text-position-control/root";
+import { type TextPosition } from "~/components/text-position-control";
 
 interface PreviewProps {
   icon: string;
