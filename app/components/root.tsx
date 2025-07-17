@@ -4,13 +4,13 @@ import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import * as TablerIcons from "@tabler/icons-react";
 import html2canvas from "html2canvas";
-import Preview from "~/components/preview/root";
+import Preview from "~/components/preview";
 import TextPositionControl, {
   type TextPosition,
-} from "~/components/text-position-control/root";
+} from "~/components/text-position-control";
 import printStyles from "~/lib/print-styles.css?raw";
 import { renderToStaticMarkup } from "react-dom/server";
-import IconPicker from "~/components/icon-picker/root";
+import IconPicker from "~/components/icon-picker";
 import { Link } from "react-router";
 
 const Root: React.FC = () => {

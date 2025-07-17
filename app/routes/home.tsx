@@ -1,6 +1,6 @@
 import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
-import Root from "~/components/section/root";
+import Root from "~/components/root";
 
 export function meta({}: Route.MetaArgs) {
   return [
