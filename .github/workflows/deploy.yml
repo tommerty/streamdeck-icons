@@ -55,9 +55,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pnpm exec semantic-release
-          echo "new_release_published=$(pnpm exec semantic-release-cli view)" >> $GITHUB_OUTPUT
-          echo "new_release_version=$(pnpm exec semantic-release-cli view | grep -oP '(?<=The next release version is )\d+\.\d+\.\d+')" >> $GITHUB_OUTPUT
+          RELEASE_OUTPUT=$(pnpm exec semantic-release || true)
+          if [ $? -eq 0 ]; then
+            echo "new_release_published=true" >> $GITHUB_OUTPUT
+            echo "new_release_version=$(echo "$RELEASE_OUTPUT" | grep -oP '(?<=The next release version is )\d+\.\d+\.\d+')" >> $GITHUB_OUTPUT
+          else
+            echo "new_release_published=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Build
         if: steps.semantic.outputs.new_release_published == 'true'
