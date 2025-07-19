@@ -3,7 +3,8 @@ import * as TablerIcons from "@tabler/icons-react";
 import { type TextPosition } from "~/components/text-position-control";
 
 interface PreviewProps {
-  icon: string;
+  icon?: string;
+  image?: string | null;
   text: string;
   textColor: string;
   backgroundColor: string;
@@ -54,6 +55,7 @@ const getPositionStyles = (position: TextPosition): React.CSSProperties => {
 
 const Preview: React.FC<PreviewProps> = ({
   icon,
+  image,
   text,
   textColor,
   backgroundColor,
@@ -64,7 +66,7 @@ const Preview: React.FC<PreviewProps> = ({
   iconRotation,
 }) => {
   const IconComponent =
-    (TablerIcons as any)[icon] || TablerIcons.IconQuestionMark;
+    (icon && (TablerIcons as any)[icon]) || TablerIcons.IconQuestionMark;
 
   const textStyle = getPositionStyles(textPosition);
   const scaleTransform = `scale(${textScale})`;
@@ -89,14 +91,23 @@ const Preview: React.FC<PreviewProps> = ({
     >
       <div
         style={{
-          color: iconColor,
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: `translate(-50%, -50%) scale(${iconScale}) rotate(${iconRotation}deg)`,
         }}
       >
-        <IconComponent size={128} />
+        {image ? (
+          <img
+            src={image}
+            alt="Uploaded Icon"
+            style={{ width: "128px", height: "128px" }}
+          />
+        ) : (
+          <div style={{ color: iconColor }}>
+            <IconComponent size={128} />
+          </div>
+        )}
       </div>
       <div
         style={{
