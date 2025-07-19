@@ -1,26 +1,15 @@
 import React, { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
 import * as TablerIcons from "@tabler/icons-react";
 import html2canvas from "html2canvas";
 import Preview from "~/components/preview";
-import TextPositionControl, {
-  type TextPosition,
-} from "~/components/text-position-control";
+import { type TextPosition } from "~/components/text-position-control";
 import printStyles from "~/lib/print-styles.css?raw";
 import { renderToStaticMarkup } from "react-dom/server";
-import IconPicker from "~/components/icon-picker";
-import { Link } from "react-router";
-import { Slider } from "./ui/slider";
-import { Label } from "./ui/label";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip";
-import { cn } from "~/lib/utils";
+import ActionButtons from "./action-buttons";
+import IconControls from "./icon-controls";
+import TextControls from "./text-controls";
+import ColorControls from "./color-controls";
 
 const Root: React.FC = () => {
   const [text, setText] = useState("");
@@ -28,6 +17,11 @@ const Root: React.FC = () => {
   const [backgroundColor, setBackgroundColor] = useState("#000000");
   const [iconColor, setIconColor] = useState("#ffffff");
   const [selectedIcon, setSelectedIcon] = useState("IconHome");
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedImageType, setUploadedImageType] = useState<string | null>(
+    null
+  );
+  const [iconSource, setIconSource] = useState<"icon" | "image">("icon");
   const [textPosition, setTextPosition] =
     useState<TextPosition>("bottom-center");
   const [textScale, setTextScale] = useState(1);
@@ -39,6 +33,14 @@ const Root: React.FC = () => {
   const handleDownload = () => {
     const node = previewRef.current;
     if (!node) return;
+
+    if (iconSource === "image" && uploadedImage) {
+      const link = document.createElement("a");
+
+      link.href = uploadedImage;
+      link.click();
+      return;
+    }
 
     const IconComponent =
       (TablerIcons as any)[selectedIcon] || TablerIcons.IconQuestionMark;
@@ -68,7 +70,10 @@ const Root: React.FC = () => {
     const textDiv = `<div style="${Object.entries(textStyle)
       .map(([k, v]) => `${k.replace(/([A-Z])/g, "-$1").toLowerCase()}:${v}`)
       .join(";")}"><div>${text}</div></div>`;
-    const iconDiv = `<div style="color:${iconColor}; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(${iconScale}) rotate(${iconRotation}deg);">${iconHTML}</div>`;
+    const iconDiv =
+      iconSource === "image" && uploadedImage
+        ? `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(${iconScale}) rotate(${iconRotation}deg);"><img src="${uploadedImage}" style="width: 128px; height: auto;" /></div>`
+        : `<div style="color:${iconColor}; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(${iconScale}) rotate(${iconRotation}deg);">${iconHTML}</div>`;
     const containerDiv = `<div class="streamdeck-icon-print-container" style="${Object.entries(
       containerStyle
     )
@@ -161,247 +166,70 @@ const Root: React.FC = () => {
     return { textStyle, containerStyle };
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const acceptedTypes = ["image/png", "image/jpeg"];
+      if (acceptedTypes.includes(file.type)) {
+        setUploadedImageType(file.type);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setUploadedImage(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert("Invalid file type. Please select a PNG or JPEG image.");
+        e.target.value = "";
+      }
+    }
+  };
+
   return (
     <div className="container w-full mx-auto p-4 min-h-dvh h-dvh">
       <div className="flex items-start gap-8 h-full">
         <div className="w-1/3 h-full min-h-full">
-          <Card className="min-h-full h-full p-0 gap-0 overflow-hidden">
+          <Card className="min-h-full h-full p-0 gap-0 overflow-hidden flex flex-col">
             <CardHeader className="p-3 bg-accent">
               <CardTitle>Stream Deck Icon</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 overflow-auto py-3 px-3">
-              {/* Icon Controls */}
-              <div className="py-1 flex items-center text-sm text-muted-foreground before:flex-1 before:border-t before:border-border before:me-6 after:flex-1 after:border-t after:border-border after:ms-6">
-                Icon Controls
-              </div>
-              <div>
-                <label>Icon</label>
-                <IconPicker
-                  value={selectedIcon}
-                  onValueChange={setSelectedIcon}
-                />
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <Label>Icon Scale</Label>
-                  <div className="flex items-center gap-1">
-                    <TooltipProvider delayDuration={0}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className={cn(
-                              "size-7 transition-opacity",
-                              iconScale !== 1 ? "opacity-100" : "opacity-0"
-                            )}
-                            aria-label="Reset"
-                            onClick={() => setIconScale(1)}
-                          >
-                            <TablerIcons.IconRestore
-                              size={16}
-                              aria-hidden="true"
-                            />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent className="px-2 py-1 text-xs">
-                          Reset to default
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    <Input
-                      className="h-7 w-12 px-2 py-0"
-                      type="text"
-                      inputMode="decimal"
-                      value={iconScale}
-                      aria-label="Enter value"
-                      onChange={(e) => setIconScale(Number(e.target.value))}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Slider
-                    className="grow"
-                    min={0.5}
-                    max={3}
-                    step={0.1}
-                    value={[iconScale]}
-                    onValueChange={(value) => setIconScale(value[0])}
-                  />
-                </div>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <Label>Icon Rotation</Label>
-                  <div className="flex items-center gap-1">
-                    <TooltipProvider delayDuration={0}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className={cn(
-                              "size-7 transition-opacity",
-                              iconRotation !== 0 ? "opacity-100" : "opacity-0"
-                            )}
-                            aria-label="Reset"
-                            onClick={() => setIconRotation(0)}
-                          >
-                            <TablerIcons.IconRestore
-                              size={16}
-                              aria-hidden="true"
-                            />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent className="px-2 py-1 text-xs">
-                          Reset to default
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    <Input
-                      className="h-7 w-12 px-2 py-0"
-                      type="text"
-                      inputMode="decimal"
-                      value={iconRotation}
-                      aria-label="Enter value"
-                      onChange={(e) => setIconRotation(Number(e.target.value))}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Slider
-                    className="grow"
-                    min={-360}
-                    max={360}
-                    defaultValue={[0]}
-                    step={10}
-                    value={[iconRotation]}
-                    onValueChange={(value) => setIconRotation(value[0])}
-                    aria-label="Rotation"
-                  />
-                </div>
-              </div>
-
-              {/* Text Controls */}
-              <div className="py-1 flex items-center text-sm text-muted-foreground before:flex-1 before:border-t before:border-border before:me-6 after:flex-1 after:border-t after:border-border after:ms-6">
-                Text Controls
-              </div>
-              <div className="group relative">
-                <label
-                  htmlFor={"text"}
-                  className="bg-card text-muted-foreground group-focus-within:text-foreground absolute start-1 top-0 z-10 block -translate-y-1/2 px-2 text-xs font-medium group-has-disabled:opacity-50"
-                >
-                  Text
-                </label>
-                <Input
-                  id={"text"}
-                  className="h-10 !bg-card"
-                  placeholder="My button"
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                />
-              </div>
-              <TextPositionControl
-                value={textPosition}
-                onValueChange={setTextPosition}
+            <CardContent className="space-y-4 overflow-auto py-3 px-3 flex-grow">
+              <IconControls
+                iconSource={iconSource}
+                onIconSourceChange={setIconSource}
+                selectedIcon={selectedIcon}
+                onSelectedIconChange={setSelectedIcon}
+                onImageUpload={handleImageUpload}
+                iconScale={iconScale}
+                onIconScaleChange={setIconScale}
+                iconRotation={iconRotation}
+                onIconRotationChange={setIconRotation}
               />
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <Label>Text Scale</Label>
-                  <div className="flex items-center gap-1">
-                    <TooltipProvider delayDuration={0}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className={cn(
-                              "size-7 transition-opacity",
-                              textScale !== 1 ? "opacity-100" : "opacity-0"
-                            )}
-                            aria-label="Reset"
-                            onClick={() => setTextScale(1)}
-                          >
-                            <TablerIcons.IconRestore
-                              size={16}
-                              aria-hidden="true"
-                            />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent className="px-2 py-1 text-xs">
-                          Reset to default
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    <Input
-                      className="h-7 w-12 px-2 py-0"
-                      type="text"
-                      inputMode="decimal"
-                      value={textScale}
-                      aria-label="Enter value"
-                      onChange={(e) => setTextScale(Number(e.target.value))}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Slider
-                    className="grow"
-                    min={0.5}
-                    max={3}
-                    step={0.1}
-                    value={[textScale]}
-                    onValueChange={(value) => setTextScale(value[0])}
-                  />
-                </div>
-              </div>
-              <div className="py-1 flex items-center text-sm text-muted-foreground before:flex-1 before:border-t before:border-border before:me-6 after:flex-1 after:border-t after:border-border after:ms-6">
-                Colors
-              </div>
-              <div>
-                <label>Text Color</label>
-                <Input
-                  type="color"
-                  value={textColor}
-                  onChange={(e) => setTextColor(e.target.value)}
-                />
-              </div>
-
-              {/* Background Controls */}
-              <div>
-                <label>Background Color</label>
-                <Input
-                  type="color"
-                  value={backgroundColor}
-                  onChange={(e) => setBackgroundColor(e.target.value)}
-                />
-              </div>
-              <div>
-                <label>Icon Color</label>
-                <Input
-                  type="color"
-                  value={iconColor}
-                  onChange={(e) => setIconColor(e.target.value)}
-                />
-              </div>
+              <TextControls
+                text={text}
+                onTextChange={setText}
+                textPosition={textPosition}
+                onTextPositionChange={setTextPosition}
+                textScale={textScale}
+                onTextScaleChange={setTextScale}
+              />
+              <ColorControls
+                textColor={textColor}
+                onTextColorChange={setTextColor}
+                backgroundColor={backgroundColor}
+                onBackgroundColorChange={setBackgroundColor}
+                iconColor={iconColor}
+                onIconColorChange={setIconColor}
+                iconSource={iconSource}
+              />
             </CardContent>
-            <div className="mt-auto px-3 py-3 flex flex-col gap-3 bg-accent rounded-b-md">
-              <Button className="w-full justify-start" onClick={handleDownload}>
-                <TablerIcons.IconDownload />
-                Download Icon
-              </Button>
-              <Link to="https://github.com/tommerty/streamdeck-icons">
-                <Button variant={"outline"} className="w-full justify-start">
-                  <TablerIcons.IconBrandGithub />
-                  GitHub
-                </Button>
-              </Link>
-            </div>
+            <ActionButtons onDownload={handleDownload} />
           </Card>
         </div>
         <div className="flex flex-col items-center w-2/3 mt-auto mb-auto gap-3">
           <div ref={previewRef}>
             <Preview
-              icon={selectedIcon}
+              icon={iconSource === "icon" ? selectedIcon : undefined}
+              image={iconSource === "image" ? uploadedImage : undefined}
               text={text}
               textColor={textColor}
               backgroundColor={backgroundColor}
@@ -412,7 +240,6 @@ const Root: React.FC = () => {
               iconRotation={iconRotation}
             />
           </div>
-          {/* <Button onClick={handleDownload}>Download Icon</Button> */}
         </div>
       </div>
     </div>
