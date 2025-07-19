@@ -26,7 +26,7 @@ interface IconControlsProps {
   onIconRotationChange: (rotation: number) => void;
 }
 
-export const IconControls: React.FC<IconControlsProps> = ({
+const IconControls: React.FC<IconControlsProps> = ({
   iconSource,
   onIconSourceChange,
   selectedIcon,
@@ -73,7 +73,7 @@ export const IconControls: React.FC<IconControlsProps> = ({
           <label>Upload Image</label>
           <Input
             type="file"
-            accept="image/png, image/jpeg, image/gif"
+            accept="image/png, image/jpeg"
             onChange={onImageUpload}
           />
         </div>
@@ -175,3 +175,5 @@ export const IconControls: React.FC<IconControlsProps> = ({
     </>
   );
 };
+
+export default IconControls;

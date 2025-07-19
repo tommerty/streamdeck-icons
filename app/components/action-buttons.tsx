@@ -7,7 +7,7 @@ interface ActionButtonsProps {
   onDownload: () => void;
 }
 
-export const ActionButtons: React.FC<ActionButtonsProps> = ({ onDownload }) => {
+const ActionButtons: React.FC<ActionButtonsProps> = ({ onDownload }) => {
   return (
     <div className="mt-auto px-3 py-3 flex flex-col gap-3 bg-accent rounded-b-md">
       <Button className="w-full justify-start" onClick={onDownload}>
@@ -23,3 +23,5 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({ onDownload }) => {
     </div>
   );
 };
+
+export default ActionButtons;

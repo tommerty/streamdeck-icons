@@ -105,3 +105,5 @@ export const TextControls: React.FC<TextControlsProps> = ({
     </>
   );
 };
+
+export default TextControls;

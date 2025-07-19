@@ -101,7 +101,7 @@ const Preview: React.FC<PreviewProps> = ({
           <img
             src={image}
             alt="Uploaded Icon"
-            style={{ width: "128px", height: "128px" }}
+            style={{ width: "128px", height: "auto" }}
           />
         ) : (
           <div style={{ color: iconColor }}>

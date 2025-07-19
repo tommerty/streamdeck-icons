@@ -11,7 +11,7 @@ interface ColorControlsProps {
   iconSource: "icon" | "image";
 }
 
-export const ColorControls: React.FC<ColorControlsProps> = ({
+const ColorControls: React.FC<ColorControlsProps> = ({
   textColor,
   onTextColorChange,
   backgroundColor,
@@ -56,3 +56,5 @@ export const ColorControls: React.FC<ColorControlsProps> = ({
     </>
   );
 };
+
+export default ColorControls;

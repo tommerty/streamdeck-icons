@@ -6,10 +6,10 @@ import Preview from "~/components/preview";
 import { type TextPosition } from "~/components/text-position-control";
 import printStyles from "~/lib/print-styles.css?raw";
 import { renderToStaticMarkup } from "react-dom/server";
-import { ActionButtons } from "./action-buttons";
-import { IconControls } from "./icon-controls";
-import { TextControls } from "./text-controls";
-import { ColorControls } from "./color-controls";
+import ActionButtons from "./action-buttons";
+import IconControls from "./icon-controls";
+import TextControls from "./text-controls";
+import ColorControls from "./color-controls";
 
 const Root: React.FC = () => {
   const [text, setText] = useState("");
@@ -18,6 +18,9 @@ const Root: React.FC = () => {
   const [iconColor, setIconColor] = useState("#ffffff");
   const [selectedIcon, setSelectedIcon] = useState("IconHome");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedImageType, setUploadedImageType] = useState<string | null>(
+    null
+  );
   const [iconSource, setIconSource] = useState<"icon" | "image">("icon");
   const [textPosition, setTextPosition] =
     useState<TextPosition>("bottom-center");
@@ -30,6 +33,14 @@ const Root: React.FC = () => {
   const handleDownload = () => {
     const node = previewRef.current;
     if (!node) return;
+
+    if (iconSource === "image" && uploadedImage) {
+      const link = document.createElement("a");
+
+      link.href = uploadedImage;
+      link.click();
+      return;
+    }
 
     const IconComponent =
       (TablerIcons as any)[selectedIcon] || TablerIcons.IconQuestionMark;
@@ -61,7 +72,7 @@ const Root: React.FC = () => {
       .join(";")}"><div>${text}</div></div>`;
     const iconDiv =
       iconSource === "image" && uploadedImage
-        ? `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(${iconScale}) rotate(${iconRotation}deg);"><img src="${uploadedImage}" style="width: 128px; height: 128px;" /></div>`
+        ? `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(${iconScale}) rotate(${iconRotation}deg);"><img src="${uploadedImage}" style="width: 128px; height: auto;" /></div>`
         : `<div style="color:${iconColor}; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(${iconScale}) rotate(${iconRotation}deg);">${iconHTML}</div>`;
     const containerDiv = `<div class="streamdeck-icon-print-container" style="${Object.entries(
       containerStyle
@@ -158,6 +169,7 @@ const Root: React.FC = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setUploadedImageType(file.type);
       const reader = new FileReader();
       reader.onloadend = () => {
         setUploadedImage(reader.result as string);
