@@ -19,7 +19,7 @@ const getPositionStyles = (position: TextPosition): React.CSSProperties => {
   const styles: React.CSSProperties = {
     position: "absolute",
     width: "100%",
-    padding: "0 20px",
+    padding: "0 10px",
     boxSizing: "border-box",
     display: "flex",
     textAlign: "center",
@@ -78,6 +78,7 @@ const Preview: React.FC<PreviewProps> = ({
     <div
       style={{
         width: "256px",
+        minWidth: "256px",
         height: "256px",
         backgroundColor,
         borderRadius: "24px",
@@ -117,6 +118,7 @@ const Preview: React.FC<PreviewProps> = ({
           fontWeight: "bold",
           wordBreak: "break-word",
         }}
+        className="w-full min-w-full"
       >
         <div>{text}</div>
       </div>

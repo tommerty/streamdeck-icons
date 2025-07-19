@@ -169,12 +169,18 @@ const Root: React.FC = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setUploadedImageType(file.type);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUploadedImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      const acceptedTypes = ["image/png", "image/jpeg"];
+      if (acceptedTypes.includes(file.type)) {
+        setUploadedImageType(file.type);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setUploadedImage(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert("Invalid file type. Please select a PNG or JPEG image.");
+        e.target.value = "";
+      }
     }
   };
 
