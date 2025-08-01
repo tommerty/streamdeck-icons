@@ -269,9 +269,9 @@ const Root: React.FC = () => {
     };
 
     return (
-        <div className="container w-full mx-auto p-4 min-h-dvh h-dvh">
-            <div className="flex items-start gap-8 h-full">
-                <div className="w-1/3 h-full min-h-full">
+        <div className="lg:container w-full mx-auto lg:p-4 min-h-dvh h-dvh">
+            <div className="flex lg:flex-row flex-col-reverse items-start gap-8 h-full">
+                <div className="lg:w-1/3 lg:h-full lg:min-h-full h-1/2 w-full">
                     <Card className="min-h-full h-full p-0 gap-0 overflow-hidden flex flex-col">
                         <CardHeader className="p-3 bg-accent">
                             <CardTitle>Stream Deck Icon</CardTitle>
@@ -314,7 +314,7 @@ const Root: React.FC = () => {
                         <ActionButtons onDownload={handleDownload} />
                     </Card>
                 </div>
-                <div className="flex flex-col items-center w-2/3 mt-auto mb-auto gap-3">
+                <div className="flex flex-col items-center lg:w-2/3 mx-auto lg:mx-0 mt-auto mb-auto gap-3">
                     <div ref={previewRef}>
                         <Preview
                             layers={layers}
