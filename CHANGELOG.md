@@ -1,3 +1,11 @@
+# [1.2.0](https://github.com/tommerty/streamdeck-icons/compare/v1.1.0...v1.2.0) (2025-08-01)
+
+
+### Features
+
+* add icon position control and layer management features ([0a874d5](https://github.com/tommerty/streamdeck-icons/commit/0a874d5375516a374f7a63ab8623c756711ee05a))
+* layering & mobile improvements ([#11](https://github.com/tommerty/streamdeck-icons/issues/11)) ([c7fe058](https://github.com/tommerty/streamdeck-icons/commit/c7fe058c5d19ad5658ef575a5bad7ade9fdc2e53)), closes [/#diff-1923b944168ec9f2cfd8d9de8fa82467f5ddb36ba6237e596da25bf33ed7cb99L46-R46](https://github.com///issues/diff-1923b944168ec9f2cfd8d9de8fa82467f5ddb36ba6237e596da25bf33ed7cb99L46-R46) [/#diff-1923b944168ec9f2cfd8d9de8fa82467f5ddb36ba6237e596da25bf33ed7cb99L55-R55](https://github.com///issues/diff-1923b944168ec9f2cfd8d9de8fa82467f5ddb36ba6237e596da25bf33ed7cb99L55-R55) [/#diff-ce2af7bdea5a636c44305777c2f686af5b96a7181ab282730c6d87cbac907cd3R4-R15](https://github.com///issues/diff-ce2af7bdea5a636c44305777c2f686af5b96a7181ab282730c6d87cbac907cd3R4-R15) [/#diff-ce2af7bdea5a636c44305777c2f686af5b96a7181ab282730c6d87cbac907cd3R53-R103](https://github.com///issues/diff-ce2af7bdea5a636c44305777c2f686af5b96a7181ab282730c6d87cbac907cd3R53-R103) [/#diff-ce2af7bdea5a636c44305777c2f686af5b96a7181ab282730c6d87cbac907cd3L93-R173](https://github.com///issues/diff-ce2af7bdea5a636c44305777c2f686af5b96a7181ab282730c6d87cbac907cd3L93-R173)
+
 # [1.1.0](https://github.com/tommerty/streamdeck-icons/compare/v1.0.0...v1.1.0) (2025-07-19)
 
 
