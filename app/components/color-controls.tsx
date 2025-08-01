@@ -43,7 +43,7 @@ const ColorControls: React.FC<ColorControlsProps> = ({
           onChange={(e) => onBackgroundColorChange(e.target.value)}
         />
       </div>
-      {iconSource === "icon" && (
+      {/* {iconSource === "icon" && (
         <div>
           <label>Icon Color</label>
           <Input
@@ -52,7 +52,7 @@ const ColorControls: React.FC<ColorControlsProps> = ({
             onChange={(e) => onIconColorChange(e.target.value)}
           />
         </div>
-      )}
+      )} */}
     </>
   );
 };

@@ -1,21 +1,18 @@
 import React from "react";
 import * as TablerIcons from "@tabler/icons-react";
 import { type TextPosition } from "~/components/text-position-control";
+import type { IconLayer, IconPosition } from "~/types/layer";
 
 interface PreviewProps {
-  icon?: string;
-  image?: string | null;
+  layers: IconLayer[];
   text: string;
   textColor: string;
   backgroundColor: string;
-  iconColor: string;
   textPosition: TextPosition;
   textScale: number;
-  iconScale: number;
-  iconRotation: number;
 }
 
-const getPositionStyles = (position: TextPosition): React.CSSProperties => {
+const getTextPositionStyles = (position: TextPosition): React.CSSProperties => {
   const styles: React.CSSProperties = {
     position: "absolute",
     width: "100%",
@@ -53,22 +50,57 @@ const getPositionStyles = (position: TextPosition): React.CSSProperties => {
   return styles;
 };
 
+const getIconPositionStyles = (position: IconPosition, offsetX: number = 0, offsetY: number = 0): React.CSSProperties => {
+  const styles: React.CSSProperties = {
+    position: "absolute",
+  };
+
+  // Start with base positions - closer to edges (reduced from 20px to 10px)
+  const edgeDistance = 10;
+
+  // Vertical alignment
+  if (position.startsWith("top")) {
+    styles.top = `${edgeDistance + offsetY}px`;
+  } else if (position.startsWith("middle")) {
+    styles.top = "50%";
+  } else if (position.startsWith("bottom")) {
+    styles.bottom = `${edgeDistance - offsetY}px`;
+  }
+
+  // Horizontal alignment
+  if (position.endsWith("left")) {
+    styles.left = `${edgeDistance + offsetX}px`;
+  } else if (position.endsWith("center")) {
+    styles.left = "50%";
+  } else if (position.endsWith("right")) {
+    styles.right = `${edgeDistance - offsetX}px`;
+  }
+
+  // Center transform for middle positions
+  let transformParts = [];
+  if (position.startsWith("middle")) {
+    transformParts.push(`translateY(calc(-50% + ${offsetY}px))`);
+  }
+  if (position.endsWith("center")) {
+    transformParts.push(`translateX(calc(-50% + ${offsetX}px))`);
+  }
+
+  if (transformParts.length > 0) {
+    styles.transform = transformParts.join(" ");
+  }
+
+  return styles;
+};
+
 const Preview: React.FC<PreviewProps> = ({
-  icon,
-  image,
+  layers,
   text,
   textColor,
   backgroundColor,
-  iconColor,
   textPosition,
   textScale,
-  iconScale,
-  iconRotation,
 }) => {
-  const IconComponent =
-    (icon && (TablerIcons as any)[icon]) || TablerIcons.IconQuestionMark;
-
-  const textStyle = getPositionStyles(textPosition);
+  const textStyle = getTextPositionStyles(textPosition);
   const scaleTransform = `scale(${textScale})`;
   textStyle.transform = textStyle.transform
     ? `${textStyle.transform} ${scaleTransform}`
@@ -90,26 +122,47 @@ const Preview: React.FC<PreviewProps> = ({
         position: "relative",
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: `translate(-50%, -50%) scale(${iconScale}) rotate(${iconRotation}deg)`,
-        }}
-      >
-        {image ? (
-          <img
-            src={image}
-            alt="Uploaded Icon"
-            style={{ width: "128px", height: "auto" }}
-          />
-        ) : (
-          <div style={{ color: iconColor }}>
-            <IconComponent size={128} />
-          </div>
-        )}
-      </div>
+      {/* Render icon layers */}
+      {layers
+        .filter((layer) => layer.visible)
+        .sort((a, b) => a.zIndex - b.zIndex)
+        .map((layer) => {
+          const IconComponent =
+            layer.iconSource === "icon" && (TablerIcons as any)[layer.selectedIcon]
+              ? (TablerIcons as any)[layer.selectedIcon]
+              : TablerIcons.IconQuestionMark;
+
+          const iconPositionStyle = getIconPositionStyles(layer.position, layer.offsetX, layer.offsetY);
+          const iconTransforms = [
+            iconPositionStyle.transform || "",
+            `scale(${layer.scale})`,
+            `rotate(${layer.rotation}deg)`,
+          ].filter(Boolean);
+
+          const finalIconStyle = {
+            ...iconPositionStyle,
+            transform: iconTransforms.join(" "),
+            zIndex: layer.zIndex,
+          };
+
+          return (
+            <div key={layer.id} style={finalIconStyle}>
+              {layer.iconSource === "image" && layer.uploadedImage ? (
+                <img
+                  src={layer.uploadedImage}
+                  alt={layer.name}
+                  style={{ width: "128px", height: "auto" }}
+                />
+              ) : (
+                <div style={{ color: layer.color }}>
+                  <IconComponent size={128} />
+                </div>
+              )}
+            </div>
+          );
+        })}
+
+      {/* Render text */}
       <div
         style={{
           ...textStyle,
@@ -117,6 +170,7 @@ const Preview: React.FC<PreviewProps> = ({
           fontSize: "32px",
           fontWeight: "bold",
           wordBreak: "break-word",
+          zIndex: 1000, // Keep text on top
         }}
         className="w-full min-w-full"
       >
